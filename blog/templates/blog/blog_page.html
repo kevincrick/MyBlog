@@ -1,0 +1,45 @@
+{% extends "blog/base.html" %}
+{% load static wagtailcore_tags wagtailimages_tags blogapp_tags el_pagination_tags wagtailmd %}
+
+{% block content %}
+
+
+    {% if search_term %}
+        <header class="page-header">
+            <h1 class="page-title">Search Results for <span>{{ search_type }}: {{ search_term }}</span></h1>
+        </header>
+    {% endif %}
+
+
+    {% paginate 2 posts %}
+
+    {% for post in posts %}
+
+        {% if post.header_image %}
+            {% image post.header_image original as header_image %}
+            <img src="{{ header_image.url }}" class="img-responsive" ></img>
+        {% endif %}
+
+        <h2>
+            <a href="{% post_date_url post blog_page %}">{{ post.title }}</a>
+        </h2>
+
+        <p>
+            <span class="glyphicon glyphicon-time"></span> Posted on {{post.date}} by {{post.owner}}
+        </p>
+
+        <hr>
+
+        {{ post.body|markdown|safe|truncatewords_html:40 }}
+
+        <a class="btn btn-primary" href="{% post_date_url post blog_page %}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+        <hr>
+
+    {% endfor %}
+
+    <ul class="pagination">
+        {% show_pages %}
+    </ul>
+
+{% endblock %}
